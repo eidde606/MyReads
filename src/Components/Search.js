@@ -6,8 +6,13 @@ import { Link } from "react-router-dom";
 
 class Search extends Component {
   state = {
+    originalList: [],
     searchedBooks: [],
   };
+
+  componentDidMount() {
+    BooksAPI.getAll().then((data) => this.setState({ originalList: data }));
+  }
 
   render() {
     const updateSearchTerm = (evt) => {
@@ -21,7 +26,12 @@ class Search extends Component {
     };
 
     const addShelf = (book) => {
-      book["shelf"] = "none";
+      const originIndex = this.state.originalList
+      .map((x) => x.id)
+      .indexOf(book.id);
+    originIndex > -1
+      ? (book.shelf = this.state.originalList[originIndex].shelf)
+      : (book.shelf = "none");
       return book;
     };
     return (
